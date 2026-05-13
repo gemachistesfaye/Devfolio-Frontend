@@ -127,22 +127,6 @@ const ClientMode = () => {
   const [activeCategory, setActiveCategory] = useState(0);
   const [activeProject, setActiveProject] = useState(0);
 
-  // Deep Link Support for Command Palette
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const projectId = params.get('project');
-    if (projectId) {
-      const index = projects.findIndex(p => p.id === projectId);
-      if (index !== -1) {
-        setActiveProject(index);
-        const projectsSection = document.getElementById('projects');
-        if (projectsSection) {
-          projectsSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    }
-  }, [location.search, projects]);
-
   const skillCategories = [
     {
       id: 'frontend',
@@ -248,6 +232,23 @@ const ClientMode = () => {
       status: 'VERIFIED' 
     }
   ];
+
+  // Deep Link Support for Command Palette
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const projectId = params.get('project');
+    if (projectId) {
+      const index = projects.findIndex(p => p.id === projectId);
+      if (index !== -1) {
+        setActiveProject(index);
+        const projectsSection = document.getElementById('projects');
+        if (projectsSection) {
+          projectsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  }, [location.search, projects]);
+
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Terminal, Sparkles, User, Bot, Loader2, ChevronDown } from 'lucide-react';
+import { MessageSquare, X, Send, Terminal, Sparkles, User, Bot, Loader2, ChevronDown, Cpu } from 'lucide-react';
 
 interface DevfolioAIProps {
   mode: 'developer' | 'client';
@@ -81,12 +81,12 @@ export const DevfolioAI: React.FC<DevfolioAIProps> = ({ mode }) => {
   const isDev = mode === 'developer';
   
   const theme = {
-    button: isDev ? 'bg-primary text-black hover:bg-white shadow-[0_0_20px_rgba(139,92,246,0.4)]' : 'bg-primary text-white hover:bg-primary/90 shadow-[0_0_20px_rgba(139,92,246,0.4)]',
-    window: isDev ? 'bg-[#050505]/95 border-primary/30 shadow-[0_0_40px_rgba(139,92,246,0.1)]' : 'bg-[#0a0d14]/95 border-primary/20 shadow-[0_0_40px_rgba(139,92,246,0.15)]',
-    header: isDev ? 'bg-[#050505] border-primary/20 text-primary' : 'bg-gradient-to-r from-primary to-violet-600 text-white border-white/10',
-    userMsg: isDev ? 'bg-white/5 border-white/10 text-white' : 'bg-primary text-white',
-    aiMsg: isDev ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-white/5 border-white/10 text-gray-200',
-    inputBg: isDev ? 'bg-[#050505] border-primary/30 focus:border-primary text-primary' : 'bg-[#161b27] border-white/10 focus:border-primary text-white'
+    button: isDev ? 'bg-black text-[#00ff00] border border-[#00ff00]/40 hover:bg-[#00ff00]/10 shadow-[0_0_20px_rgba(0,255,0,0.3)]' : 'bg-primary text-white hover:bg-primary/90 shadow-[0_0_20px_rgba(139,92,246,0.4)]',
+    window: isDev ? 'bg-black/95 border-[#00ff00]/30 shadow-[0_0_50px_rgba(0,255,0,0.15)]' : 'bg-[#0a0d14]/95 border-primary/20 shadow-[0_0_40px_rgba(139,92,246,0.15)]',
+    header: isDev ? 'bg-black border-[#00ff00]/20 text-[#00ff00]' : 'bg-gradient-to-r from-primary to-violet-600 text-white border-white/10',
+    userMsg: isDev ? 'bg-[#00ff00]/5 border-[#00ff00]/20 text-white font-mono' : 'bg-primary text-white',
+    aiMsg: isDev ? 'bg-[#00ff00]/10 border-[#00ff00]/30 text-[#00ff00] font-mono' : 'bg-white/5 border-white/10 text-gray-200',
+    inputBg: isDev ? 'bg-black border-[#00ff00]/30 focus:border-[#00ff00] text-[#00ff00] font-mono' : 'bg-[#161b27] border-white/10 focus:border-primary text-white'
   };
 
   return (
@@ -100,43 +100,70 @@ export const DevfolioAI: React.FC<DevfolioAIProps> = ({ mode }) => {
             transition={{ duration: 0.2 }}
             className={`mb-4 w-[350px] sm:w-[400px] h-[500px] max-h-[80vh] flex flex-col rounded-2xl border backdrop-blur-xl overflow-hidden ${theme.window}`}
           >
-            {/* Header */}
-            <div className={`p-4 border-b flex items-center justify-between shrink-0 ${theme.header}`}>
+            {/* Header - Terminal Style */}
+            <div className={`p-3 border-b flex items-center justify-between shrink-0 ${theme.header}`}>
               <div className="flex items-center gap-3">
-                {isDev ? <Terminal size={18} /> : <Sparkles size={18} />}
+                <div className="flex gap-1.5 mr-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+                </div>
+                <div className="h-4 w-px bg-white/10 mx-1" />
+                <Terminal size={14} className="text-[#00ff00]" />
                 <div>
-                  <div className="font-bold text-sm tracking-wide">
-                    {isDev ? 'SYS.AI_ASSISTANT' : 'Gemachis AI'}
+                  <div className="font-black text-[10px] tracking-widest uppercase">
+                    {isDev ? 'SYSTEM_CORE_V5.0' : 'Gemachis AI'}
                   </div>
-                  <div className="text-[10px] opacity-70 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Online & Ready
+                  <div className="text-[8px] opacity-70 font-mono">
+                    PID: 0x4A2 // STABLE
                   </div>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="opacity-70 hover:opacity-100 transition-opacity">
-                <ChevronDown size={20} />
+              <button onClick={() => setIsOpen(false)} className="text-[#00ff00] opacity-50 hover:opacity-100 transition-opacity">
+                <X size={16} />
               </button>
             </div>
 
-            {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
+            {/* Chat Area - Scanline effect */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar relative">
+              {isDev && <div className="absolute inset-0 pointer-events-none scanline-bg opacity-10" />}
+              
               {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  initial={{ opacity: 0, x: msg.role === 'user' ? 10 : -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                 >
-                  <div className={`max-w-[85%] rounded-2xl p-3 text-sm leading-relaxed border ${msg.role === 'user' ? `${theme.userMsg} rounded-br-sm` : `${theme.aiMsg} rounded-bl-sm`}`}>
-                    <div className="whitespace-pre-wrap font-sans">{msg.content}</div>
+                  <div className="flex items-center gap-2 mb-1 opacity-40 text-[9px] font-mono uppercase tracking-tighter">
+                    {msg.role === 'user' ? (
+                      <>
+                        <span>root@devfolio</span>
+                        <User size={8} />
+                      </>
+                    ) : (
+                      <>
+                        <Cpu size={8} className="text-[#00ff00]" />
+                        <span className="text-[#00ff00]">sys_intel // mem: 42mb</span>
+                      </>
+                    )}
+                  </div>
+                  <div className={`max-w-[90%] p-3 text-[11px] leading-relaxed border ${msg.role === 'user' ? `${theme.userMsg} rounded-lg rounded-tr-none` : `${theme.aiMsg} rounded-lg rounded-tl-none`}`}>
+                    <div className="whitespace-pre-wrap font-mono">
+                      {msg.role === 'ai' && <span className="mr-2 text-[#00ff00]">➜</span>}
+                      {msg.content}
+                    </div>
                   </div>
                 </motion.div>
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className={`rounded-2xl p-3 border rounded-bl-sm ${theme.aiMsg}`}>
-                    <Loader2 size={16} className="animate-spin" />
+                  <div className={`p-3 border rounded-lg rounded-tl-none ${theme.aiMsg}`}>
+                    <div className="flex gap-1">
+                      <div className="w-1 h-1 bg-[#00ff00] animate-bounce" />
+                      <div className="w-1 h-1 bg-[#00ff00] animate-bounce delay-75" />
+                      <div className="w-1 h-1 bg-[#00ff00] animate-bounce delay-150" />
+                    </div>
                   </div>
                 </div>
               )}

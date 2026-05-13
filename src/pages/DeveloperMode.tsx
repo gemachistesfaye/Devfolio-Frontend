@@ -47,7 +47,7 @@ const MatrixBackground: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-[0.15] pointer-events-none" />;
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0 opacity-[0.05] pointer-events-none" />;
 };
 
 const DeveloperMode: React.FC = () => {
@@ -134,6 +134,21 @@ const DeveloperMode: React.FC = () => {
     exit: () => {
       navigate('/client');
       return { type: 'system', content: 'TERMINATING SESSION...' };
+    },
+    ai: (args: string[]) => {
+      if (!args.length) return { 
+        type: 'info', 
+        content: "[SYS_INTEL] System Architect AI online.\n\nQuery protocols: 'ai architecture', 'ai stack', 'ai <project-id>'\n\nType 'ai' followed by your query for heuristic analysis." 
+      };
+      const query = args.join(' ').toLowerCase();
+      
+      let response = "[SYS_INTEL] Processing heuristic analysis... Connection to Gemini-Pro stable.\n\nQuery not found in primary heuristics. Try analyzing system architecture or specific project prototypes.";
+      
+      if (query.includes('architecture')) response = "[AI_SYSTEM_CORE]\nArchitecture: Decoupled Edge-API-Core pattern.\n- Edge: Next.js SSR/ISR\n- Gateway: Node.js / JWT Auth\n- Persistent Layer: PostgreSQL / Redis Cache\n- Heuristics: Federated AI nodes.";
+      else if (query.includes('stack')) response = "[AI_SYSTEM_CORE]\nStack Matrix:\n- Logic: TypeScript / React / Node.js\n- Data: SQL / NoSQL / Vector DB\n- Intelligence: Gemini Pro / GPT-4o\n- Automation: Python / CI/CD Pipelines";
+      else if (query.includes('ethio') || query.includes('brew')) response = "[PROJECT_INTEL] Ethio-Brew Analysis:\n- Complexity: HIGH\n- Core: Multilingual Coffee Sommelier Engine\n- Business Logic: Multi-vendor marketplace with AI recommendations\n- Security: Production-grade RBAC/JWT encryption.";
+      
+      return { type: 'info', content: response };
     },
     status: () => ({
       type: 'system',

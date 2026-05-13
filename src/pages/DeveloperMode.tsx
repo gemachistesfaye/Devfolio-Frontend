@@ -66,11 +66,30 @@ const DeveloperMode: React.FC = () => {
     { type: 'info', content: 'Full-Stack Engineer | Information Science Specialist | AI Architect' },
     { type: 'badge', content: '💼 Available for Freelance & Strategic Partnerships' },
     { type: 'system', content: 'Type "help" to explore engineered systems and protocols.' },
-    { type: 'system', content: 'Press Ctrl+K for Global Command Palette.' },
     { type: 'system', content: '---' }
   ]);
   const [isBooting, setIsBooting] = useState(true);
+  const [isForensic, setIsForensic] = useState(false);
+  const [isAudioOn, setIsAudioOn] = useState(false);
+  const [vitals, setVitals] = useState({ cpu: 0, mem: 42, uptime: '00:00:00' });
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Uptime & Vitals Logic
+  useEffect(() => {
+    const start = Date.now();
+    const interval = setInterval(() => {
+      const diff = Date.now() - start;
+      const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+      const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+      const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+      setVitals({
+        cpu: Math.floor(Math.random() * 15) + 5,
+        mem: 42 + (diff / 100000),
+        uptime: `${h}:${m}:${s}`
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsBooting(false), 1200);
@@ -118,18 +137,57 @@ const DeveloperMode: React.FC = () => {
       type: 'info',
       content: `ENGINEERING: System Design, REST APIs, Security\nSTACK: React, Node.js, TypeScript, SQL, Gemini AI`
     }),
-    socials: () => ({
+    git: () => ({
       type: 'info',
-      content: `UPLINKS:\n- GitHub   : https://github.com/gemachistesfaye\n- LinkedIn : https://www.linkedin.com/in/gemachis-tesfaye-137196318\n- Telegram : @urjiiko1`
+      content: `COMMITS // BRANCH: production\n\n- [2026-05-13] feat: integrated AI heuristic engine\n- [2026-05-12] fix: resolved deep-linking ref error\n- [2026-05-11] docs: finalized system architecture map\n- [2026-05-10] refactor: optimized matrix render logic\n- [2026-05-09] init: established devfolio-os kernel`
     }),
-    history: () => ({
+    neofetch: () => ({
       type: 'system',
-      content: `COMMAND_LOG:\n${history.map((h, i) => `${i + 1} ${h}`).join('\n')}`
+      content: `
+   _____   Gemachis Tesfaye @ devfolio-os
+  |  __ \\  -----------------------------
+  | |  | | OS: Devfolio Professional v5.1
+  | |  | | KERNEL: Info_Science_Architect
+  | |__| | UPTIME: ${vitals.uptime}
+  |_____/  SHELL: TypeScript/React/AI
+           DE: Framer-Motion Cinematic
+           CPU: AI-Powered Heuristics
+           MEMORY: ${vitals.mem.toFixed(0)}MB / 4096MB
+      `
     }),
-    sudo: () => {
+    tree: () => ({
+      type: 'info',
+      content: `SYSTEM_MAP:\n.\n├── src/\n│   ├── pages/ (Client, Developer)\n│   ├── components/ (AI, Vitals, Matrix)\n│   └── engine/ (Protocols, Heuristics)\n├── api/\n│   ├── gateway/ (JWT, RBAC)\n│   └── core/ (PostgreSQL, Redis)\n└── ai/\n    └── gemini-pro/ (Intelligence Layer)`
+    }),
+    scan: (args) => {
+      if (!args.length) return { type: 'error', content: 'SCAN_ERROR: Specify project ID.' };
+      const id = args[0].toUpperCase();
+      if (!projectData[id]) return { type: 'error', content: `SCAN_ERROR: ID ${id} not found.` };
+      
+      setTimeout(() => setOutput(prev => [...prev, { type: 'system', content: 'SCANNING DEPENDENCIES... [■■■■■■■■□□] 80%' }]), 500);
+      setTimeout(() => setOutput(prev => [...prev, { type: 'system', content: 'PERFORMANCE PROFILING... [■■■■■■■■■□] 95%' }]), 1500);
+      setTimeout(() => setOutput(prev => [...prev, { type: 'info', content: `AUDIT COMPLETE: ${id} Integrity 98.4% // Latency 14ms` }]), 2500);
+      
+      return { type: 'system', content: `INITIALIZING HEURISTIC SCAN: ${id}` };
+    },
+    sudo: (args) => {
+      if (args[0] === '-i') {
+        setIsForensic(!isForensic);
+        return { type: 'error', content: `FORENSIC_MODE: ${!isForensic ? 'ACTIVATED' : 'DEACTIVATED'}` };
+      }
       setTimeout(() => setOutput(prev => [...prev, { type: 'system', content: 'AUTHENTICATING...' }]), 500);
       setTimeout(() => setOutput(prev => [...prev, { type: 'system', content: 'PRIVILEGES ELEVATED: WELCOME ROOT.' }]), 1500);
       return { type: 'system', content: 'REQUESTING ELEVATION...' };
+    },
+    view: (args) => {
+      const id = args[0]?.toUpperCase();
+      if (!id || !projectData[id]) return { type: 'error', content: `VIEW_ERROR: Project ${id || ''} not found. Type 'ls' for available IDs.` };
+      
+      setTimeout(() => setOutput(prev => [...prev, { type: 'system', content: `COMPILING ${id}...` }]), 400);
+      setTimeout(() => setOutput(prev => [...prev, { type: 'system', content: 'EXECUTING UNIT TESTS... [PASSED]' }]), 800);
+      setTimeout(() => setOutput(prev => [...prev, { type: 'info', content: projectData[id].content }]), 1500);
+      
+      return { type: 'system', content: `LOADING ARCHITECTURE: ${id}` };
     },
     exit: () => {
       navigate('/client');
@@ -199,16 +257,46 @@ const DeveloperMode: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-[#00ff00] font-mono selection:bg-[#00ff00]/20 selection:text-[#00ff00] relative">
+    <div className={`min-h-screen ${isForensic ? 'bg-[#1a0000] text-rose-500' : 'bg-black text-[#00ff00]'} font-mono selection:bg-[#00ff00]/20 relative transition-colors duration-1000`}>
       <MatrixBackground />
       
-      <div className="fixed top-6 right-8 z-[100]">
+      {/* SIMPLIFIED HEADER NAV */}
+      <div className="fixed top-6 right-8 z-[100] flex items-center gap-4">
+        <button 
+          onClick={() => setIsAudioOn(!isAudioOn)}
+          className={`p-2.5 rounded-lg border transition-all backdrop-blur-md bg-black/40 ${isAudioOn ? (isForensic ? 'border-rose-500 text-rose-500' : 'border-[#00ff00] text-[#00ff00]') : 'border-white/10 text-white/20'}`}
+        >
+          <Zap size={14} className={isAudioOn ? 'animate-pulse' : 'opacity-40'} />
+        </button>
         <button 
           onClick={() => navigate('/client')}
-          className="px-6 py-2 rounded-lg border border-[#00ff00]/20 text-[10px] font-black uppercase tracking-widest hover:bg-[#00ff00]/10 transition-all text-[#00ff00] backdrop-blur-md bg-black/40"
+          className={`px-6 py-2 rounded-lg border text-[10px] font-black uppercase tracking-widest transition-all backdrop-blur-md bg-black/40 ${isForensic ? 'border-rose-900 text-rose-500 hover:bg-rose-900/10' : 'border-[#00ff00]/20 text-[#00ff00] hover:bg-[#00ff00]/10'}`}
         >
           {`</> Client Mode`}
         </button>
+      </div>
+
+      {/* VITALS DASHBOARD */}
+      <div className={`fixed left-8 top-32 z-50 hidden xl:flex flex-col gap-6 p-6 rounded-2xl border backdrop-blur-md ${isForensic ? 'bg-rose-900/5 border-rose-900/20' : 'bg-[#00ff00]/5 border-[#00ff00]/10'}`}>
+        <div className="space-y-1">
+          <div className="text-[10px] font-black opacity-40 uppercase tracking-widest">SYSTEM_UPTIME</div>
+          <div className="text-xl font-black tracking-tighter tabular-nums">{vitals.uptime}</div>
+        </div>
+        <div className="space-y-1">
+          <div className="text-[10px] font-black opacity-40 uppercase tracking-widest">CPU_HEURISTICS</div>
+          <div className="flex items-end gap-1">
+            <div className="text-xl font-black tracking-tighter tabular-nums">{vitals.cpu}%</div>
+            <div className="flex gap-0.5 mb-1.5">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={`w-1 h-3 rounded-full ${i < (vitals.cpu / 20) ? (isForensic ? 'bg-rose-500' : 'bg-[#00ff00]') : 'bg-white/10'}`} />
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="space-y-1">
+          <div className="text-[10px] font-black opacity-40 uppercase tracking-widest">MEM_ALLOCATION</div>
+          <div className="text-xl font-black tracking-tighter tabular-nums">{vitals.mem.toFixed(0)}MB</div>
+        </div>
       </div>
 
       <div className="pt-32 pb-12 px-8 w-full relative z-10 flex flex-col items-center">

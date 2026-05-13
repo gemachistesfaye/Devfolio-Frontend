@@ -28,7 +28,7 @@ const TopSystemBar: React.FC = () => {
     }
   };
 
-  if (!isDev) return null;
+  if (isDev || location.pathname === '/') return null;
 
   return (
     <header className="fixed top-0 left-0 w-full h-12 z-[100] border-b border-white/5 bg-dark-900/70 backdrop-blur-xl flex items-center px-5 justify-between">

@@ -187,25 +187,13 @@ const DeveloperMode: React.FC = () => {
     <div className="min-h-screen bg-black text-[#00ff00] font-mono selection:bg-[#00ff00]/20 selection:text-[#00ff00] relative">
       <MatrixBackground />
       
-      {/* SIMPLIFIED HEADER NAV */}
-      <div className="fixed top-0 left-0 right-0 h-16 bg-black/80 border-b border-[#00ff00]/10 backdrop-blur-md z-50 px-8 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <div className="text-xl font-black tracking-tighter">GEMACHIS<span className="text-white">.OS</span></div>
-          <div className="hidden md:flex items-center gap-4 text-[10px] font-black opacity-40">
-             <span className="text-[#00ff00] animate-pulse">● ONLINE</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded text-[9px] font-black text-white/40">
-            <span className="opacity-60 text-[8px]">CMD</span> K
-          </div>
-          <button 
-            onClick={() => navigate('/client')}
-            className="px-6 py-2 rounded-lg border border-[#00ff00]/20 text-[10px] font-black uppercase tracking-widest hover:bg-[#00ff00]/10 transition-all text-[#00ff00]"
-          >
-            {`</> Client Mode`}
-          </button>
-        </div>
+      <div className="fixed top-6 right-8 z-[100]">
+        <button 
+          onClick={() => navigate('/client')}
+          className="px-6 py-2 rounded-lg border border-[#00ff00]/20 text-[10px] font-black uppercase tracking-widest hover:bg-[#00ff00]/10 transition-all text-[#00ff00] backdrop-blur-md bg-black/40"
+        >
+          {`</> Client Mode`}
+        </button>
       </div>
 
       <div className="pt-32 pb-12 px-8 w-full relative z-10 flex flex-col items-center">
@@ -238,7 +226,7 @@ const DeveloperMode: React.FC = () => {
                   </div>
                 )}
                 {line.type === 'system' && i > 3 && (
-                  <div className="text-white/30 text-xs font-bold uppercase tracking-[0.3em] mt-2">
+                  <div className={`text-xs font-black uppercase tracking-[0.3em] mt-3 ${i === 6 ? 'text-[#00ff00] opacity-40 animate-pulse' : 'text-white/60'}`}>
                     {line.content}
                   </div>
                 )}
